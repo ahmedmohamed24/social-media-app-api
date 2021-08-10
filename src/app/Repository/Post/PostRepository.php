@@ -31,6 +31,20 @@ class PostRepository extends BaseRepository implements IPostRepository
             ->with('comments')->withCount('likes')
             ->withCount('comments')->with('comments.likes')->with(['comments' => function ($query) {
                 $query->withCount('likes');
+                $query->with('likes');
+                $query->with(['likes' => function ($q) {
+                    $q->with('owner');
+                }]);
+                $query->withCount('replies');
+                $query->with('replies');
+                $query->with(['replies' => function ($q) {
+                    $q->with('owner');
+                    $q->with('likes');
+                    $q->with(['likes' => function ($qu) {
+                        $qu->with('owner');
+                    }]);
+                    $q->withCount('likes');
+                }]);
             }])->findOrFail($id);
     }
 
