@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\CreationRequest;
 use App\Http\Requests\Post\UpdateRequest;
 use App\Http\Traits\ApiResponse;
+use App\Jobs\PostCreatedJob;
 use App\Models\Post;
 use App\Repository\Post\IPostRepository;
 use Illuminate\Http\Request;
@@ -48,6 +49,7 @@ class PostController extends Controller
     {
         $post = ['content' => $request->content, 'owner' => \auth()->id()];
         $post = Post::create($post);
+        \dispatch(new PostCreatedJob($post, \auth()->id()));
 
         return $this->response(201, 'created', null, ['post' => $post]);
     }
