@@ -2,70 +2,73 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Http\Traits\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Comment\CreationRequest;
+use App\Http\Requests\Comment\UpdateRequest;
+use App\Http\Traits\ApiResponse;
+use App\Models\Comment;
+use App\Models\Post;
+use App\Repository\Comment\ICommentRepository;
 
 class CommentController extends Controller
 {
     use ApiResponse;
     protected $model;
 
-    public function __construct(IPostRepository $model)
+    public function __construct(ICommentRepository $model)
     {
         $this->model = $model;
     }
 
-    public function show(Post $post)
+    public function paginate()
     {
-        return $post;
     }
 
-    public function store(CreationRequest $request)
+    public function store(Post $post, CreationRequest $request)
     {
-        $post = ['content' => $request->content, 'owner' => \auth()->id()];
-        $post = Post::create($post);
+        $comment = $post->comments()->create(['content' => $request->content, 'commented_by' => \auth()->id()]);
 
-        return $this->response(201, 'created', null, ['post' => $post]);
+        return $this->response(201, 'created', \null, ['comment' => $comment]);
     }
 
-    public function getUserPosts(Request $request)
+    public function update(Post $post, Comment $comment, UpdateRequest $request)
     {
-        $posts = $this->model->getUserPosts();
+        $this->authorize('update', $comment);
+        $comment = $post->comments()->where('id', $comment->id)->firstOrFail()->update(['content' => $request->content]);
 
-        return $this->response(200, 'success', \null, ['posts' => $posts]);
+        return $this->response(200, 'updated', \null, $comment);
     }
 
-    public function update(Post $post, UpdateRequest $request)
+    public function delete(Post $post, Comment $comment)
     {
-        $this->authorize('update', $post);
-        $post->update($request->validated());
-
-        return $this->response(200, 'updated', \null, ['post' => $post]);
-    }
-
-    public function delete(Post $post)
-    {
-        $this->authorize('delete', $post);
-        $post->delete();
+        $this->authorize('delete', $comment);
+        $isDeleted = $post->comments()->where('id', $comment->id)->firstOrFail()->delete();
+        if (!$isDeleted) {
+            return $this->response(500, 'Internal Error occurred!', ['Unexpected Error happened, please try again!'], null);
+        }
 
         return $this->response(200, 'deleted', \null, \null);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(Post $post, int $comment)
     {
-        $post = $this->model->findWithDeleted($id);
-        $this->authorize('forceDelete', $post);
-        $post->forceDelete();
+        $comment = $post->comments()->where('id', $comment)->firstOrFail();
+        $this->authorize('forceDelete', $comment);
+        $isDeleted = $comment->forceDelete();
+        if (!$isDeleted) {
+            return $this->response(500, 'Internal Error occurred!', ['Unexpected Error happened, please try again!'], null);
+        }
 
-        return $this->response(200, 'permanently deleted', \null, \null);
+        return $this->response(200, 'permanent deleted', \null, \null);
     }
 
-    public function restore(int $id)
+    public function restore(Post $post, int $comment)
     {
-        $post = $this->model->findWithDeleted($id);
-        $this->authorize('restore', $post);
-        $post->restore();
+        $comment = $post->comments()->withTrashed()->where('id', $comment)->firstOrFail();
+        $this->authorize('restore', $comment);
+        $comment = $comment->restore();
 
-        return $this->response(200, 'restored', \null, ['post' => $post]);
+        return $this->response(200, 'restored', \null, ['comment' => $comment]);
+
     }
 }

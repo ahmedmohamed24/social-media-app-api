@@ -25,7 +25,7 @@ class PostRepository extends BaseRepository implements IPostRepository
         return self::$model->with('likes')->with('owner')->with('comments')->find($id);
     }
 
-    public function findOrFail(int $id): ?Model
+    public function findOrFail(int $id): Model
     {
         return self::$model->with('likes')->with('owner')->with('comments')->findOrFail($id);
     }
@@ -48,5 +48,15 @@ class PostRepository extends BaseRepository implements IPostRepository
     public function findWithDeleted(int $id)
     {
         return self::$model->withTrashed()->findOrFail($id);
+    }
+
+    public function restore(int $id): ?Model
+    {
+        return self::$model->withTrashed()->where('id', $id)->firstOrFail()->restore();
+    }
+
+    public function forceDelete(int $id): ?bool
+    {
+        return self::$model->withTrashed()->where('id', $id)->firstOrFail()->forceDelete();
     }
 }

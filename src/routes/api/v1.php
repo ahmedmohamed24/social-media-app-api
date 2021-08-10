@@ -30,12 +30,12 @@ Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
         Route::delete('/post/{post}', 'PostController@delete')->name('post.delete');
         Route::get('/user/posts', 'PostController@getUserPosts')->name('user.posts');
         //Comments
-        Route::post('/comment/{model}', 'CommentController@store')->name('comment.store');
-        Route::delete('/comment/permanent/{id}', 'CommentController@forceDelete')->name('comment.forceDelete');
-        Route::get('/comment/restore/{id}', 'CommentController@restore')->name('comment.restore');
-        Route::get('/comment/{comment}', 'CommentController@show')->name('comment.show');
-        Route::put('/comment/{comment}', 'CommentController@update')->name('comment.update');
-        Route::delete('/comment/{comment}', 'CommentController@delete')->name('comment.delete');
+        Route::get('/comment/restore/{post}/{comment}', 'CommentController@restore')->name('comment.restore');
+        Route::post('/comment/{post}', 'CommentController@store')->name('comment.store');
+        Route::delete('/comment/permanent/{post}/{id}', 'CommentController@forceDelete')->name('comment.forceDelete');
+        Route::delete('/comment/{post}/{comment}', 'CommentController@delete')->name('comment.delete');
+        Route::put('/comment/{post}/{comment}', 'CommentController@update')->name('comment.update');
+
         //post-likes
         Route::post('/like/{post}', 'LikePostController@storeLike')->name('like.post.save');
         Route::delete('/like/{post}', 'LikePostController@removeLike')->name('like.post.remove');

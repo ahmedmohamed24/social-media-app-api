@@ -10,15 +10,12 @@ interface ICommentRepository
 
     public function find(int $id): ?Model;
 
-    public function findOrFail(int $id): ?Model;
-
-    public function getOwner(): Model;
-
-    public function getModel(): Model;
-
     public function delete(Model $model): bool;
 
-    public function restore(Model $model): bool;
+    public function findWithDeleted(int $id);
 
-    public function forceDelete(Model $model): bool;
+    public function restore(int $id): ?Model;
+
+    public function forceDelete(int $id): ?bool;
+
 }
