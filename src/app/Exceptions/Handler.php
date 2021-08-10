@@ -3,8 +3,11 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -39,11 +42,24 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        if ($e instanceof AccessDeniedHttpException) {
+            return response()->json(['data' => [], 'errors' => ['User Not authorized to perform this action'], 'meta' => ['message' => $e->getMessage()]], 403);
+        }
         if ($e instanceof AuthenticationException) {
             return response()->json(['data' => [], 'errors' => ['Unauthenticated'], 'meta' => ['message' => $e->getMessage()]], 401);
         }
         if ($e instanceof ValidationException) {
             return response()->json(['data' => [], 'errors' => [$e->errors()], 'meta' => ['message' => $e->getMessage()]], 401);
+        }
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json(['data' => [], 'errors' => ['Model' => 'Not Found!'], 'meta' => ['message' => $e->getMessage()]], 404);
+        }
+        if ($e instanceof UnauthorizedException) {
+            return response()->json(['data' => [], 'errors' => ['User Not authorized to perform this action'], 'meta' => ['message' => $e->getMessage()]], 403);
+        }
+
+        if ($e instanceof UnauthorizedException) {
+            return response()->json(['data' => [], 'errors' => ['User Not authorized to perform this action'], 'meta' => ['message' => $e->getMessage()]], 403);
         }
 
         return parent::render($request, $e);
