@@ -29,6 +29,6 @@ class LikePostController extends Controller
         }
         $data = $post->likes()->where('liked_by', auth()->id())->delete();
 
-        return $this->response(200, 'liked', null, $data);
+        return $this->response(200, 'disliked', null, $data);
     }
 }

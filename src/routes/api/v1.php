@@ -35,10 +35,12 @@ Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
         Route::delete('/comment/permanent/{post}/{id}', 'CommentController@forceDelete')->name('comment.forceDelete');
         Route::delete('/comment/{post}/{comment}', 'CommentController@delete')->name('comment.delete');
         Route::put('/comment/{post}/{comment}', 'CommentController@update')->name('comment.update');
-
         //post-likes
-        Route::post('/like/{post}', 'LikePostController@storeLike')->name('like.post.save');
-        Route::delete('/like/{post}', 'LikePostController@removeLike')->name('like.post.remove');
+        Route::post('/like/post/{post}', 'LikePostController@storeLike')->name('like.post.save');
+        Route::delete('/like/post/{post}', 'LikePostController@removeLike')->name('like.post.remove');
+        //comment-likes
+        Route::post('/like/comment/{comment}', 'LikeCommentController@storeLike')->name('like.comment.save');
+        Route::delete('/like/comment/{comment}', 'LikeCommentController@removeLike')->name('like.comment.remove');
     });
     Route::group(['middleware' => 'guest:api'], function () {
         Route::post('/register', 'Auth\User\AuthController@register')->name('user.register');

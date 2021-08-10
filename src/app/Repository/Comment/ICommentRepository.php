@@ -17,5 +17,4 @@ interface ICommentRepository
     public function restore(int $id): ?Model;
 
     public function forceDelete(int $id): ?bool;
-
 }

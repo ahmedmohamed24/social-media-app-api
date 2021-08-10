@@ -27,7 +27,11 @@ class PostRepository extends BaseRepository implements IPostRepository
 
     public function findOrFail(int $id): Model
     {
-        return self::$model->with('likes')->with('owner')->with('comments')->findOrFail($id);
+        return self::$model->with('likes')->with('likes.owner')->with('owner')
+            ->with('comments')->withCount('likes')
+            ->withCount('comments')->with('comments.likes')->with(['comments' => function ($query) {
+                $query->withCount('likes');
+            }])->findOrFail($id);
     }
 
     public function getUser(): Model
