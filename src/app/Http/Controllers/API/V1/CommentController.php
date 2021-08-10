@@ -52,7 +52,7 @@ class CommentController extends Controller
 
     public function forceDelete(Post $post, int $comment)
     {
-        $comment = $post->comments()->where('id', $comment)->firstOrFail();
+        $comment = $post->comments()->withTrashed()->where('id', $comment)->firstOrFail();
         $this->authorize('forceDelete', $comment);
         $isDeleted = $comment->forceDelete();
         if (!$isDeleted) {
@@ -69,6 +69,5 @@ class CommentController extends Controller
         $comment = $comment->restore();
 
         return $this->response(200, 'restored', \null, ['comment' => $comment]);
-
     }
 }
