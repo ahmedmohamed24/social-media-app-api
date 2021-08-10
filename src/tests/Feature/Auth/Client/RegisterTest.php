@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth\Client;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -20,12 +19,20 @@ class RegisterTest extends TestCase
         'redirect' => 'https://google.com',
         'confidential' => \true,
     ];
+    private $accessToken;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $admin = $this->getAdmin();
+        $this->accessToken = $admin['data']['access_token'];
+    }
 
     // @test
     public function test201StatusReceivedOnRegister()
     {
         $this->withoutExceptionHandling();
-        $response = $this->actingAs(User::factory()->create())->postJson(\route('clients.store'), $this->client);
+        $response = $this->postJson(\route('clients.store'), $this->client, ['Authorization' => 'Bearer '.$this->accessToken]);
         $response->assertStatus(201);
     }
 
@@ -33,26 +40,24 @@ class RegisterTest extends TestCase
     public function testClientSavedInDBAfterRegister()
     {
         $this->withoutExceptionHandling();
-        $response = $this->actingAs(User::factory()->create())->postJson(\route('clients.store'), $this->client);
+        $response = $this->postJson(\route('clients.store'), $this->client, ['Authorization' => 'Bearer '.$this->accessToken]);
         $this->assertDatabaseHas('oauth_clients', ['name' => $response->getData()->name]);
     }
 
     // @test
     public function testClientNameIsRequired()
     {
-        $this->withoutExceptionHandling();
         $this->client['name'] = '';
-        $response = $this->actingAs(User::factory()->create())->postJson(\route('clients.store'), $this->client);
-        $response->assertJsonValidationErrors('name');
+        $response = $this->postJson(\route('clients.store'), $this->client, ['Authorization' => 'Bearer '.$this->accessToken]);
+        $response->assertJsonFragment(['name' => ['The name field is required.']]);
     }
 
     // @test
     public function testClientRedirectUrlIsValid()
     {
-        $this->withoutExceptionHandling();
         $this->client['redirect'] = 'test';
-        $response = $this->actingAs(User::factory()->create())->postJson(\route('clients.store'), $this->client);
-        $response->assertJsonValidationErrors('redirect');
+        $response = $this->postJson(\route('clients.store'), $this->client, ['Authorization' => 'Bearer '.$this->accessToken]);
+        $response->assertJsonFragment(['redirect' => ['One or more redirects have an invalid url format.']]);
     }
 
     // @test
