@@ -13,7 +13,12 @@ $namespaceV1 = 'App\\Http\\Controllers\\API\\V1';
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/client/register', [\App\Http\Controllers\API\V1\Auth\Client\RegisterController::class, 'storeClient'])->middleware('auth')->name('clients.store');
+Route::group(['middleware' => ['auth:admin']], function () {
+    Route::post('/client', [\App\Http\Controllers\API\V1\Auth\Client\RegisterController::class, 'store'])->name('clients.store');
+    Route::get('/client', [\App\Http\Controllers\API\V1\Auth\Client\RegisterController::class, 'forUser'])->name('clients.all');
+    Route::put('/client/{client}', [\App\Http\Controllers\API\V1\Auth\Client\RegisterController::class, 'update'])->name('clients.update');
+    Route::delete('/client/{client}', [\App\Http\Controllers\API\V1\Auth\Client\RegisterController::class, 'destroy'])->name('clients.delete');
+});
 
 Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
     Route::group(['middleware' => 'auth:api'], function () {

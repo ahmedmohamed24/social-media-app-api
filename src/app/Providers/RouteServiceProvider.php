@@ -39,7 +39,12 @@ class RouteServiceProvider extends ServiceProvider
             Route::prefix('api/1.x')
                 ->middleware(['api', 'force.json'])
                 ->namespace($this->namespace)
-                ->group(base_path('routes/api/v1.php'))
+                ->group(base_path('routes/api/v1/api.php'))
+            ;
+            Route::prefix('api/1.x')
+                ->middleware(['api', 'force.json'])
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api/v1/admin.php'))
             ;
             Route::middleware('web')
                 ->namespace($this->namespace)
