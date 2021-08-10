@@ -20,9 +20,11 @@ class PostController extends Controller
         $this->model = $model;
     }
 
-    public function show(Post $post)
+    public function show(int $post)
     {
-        return $post;
+        $post = $this->model->findOrFail($post);
+
+        return $this->response(200, 'success', \null, ['post' => $post]);
     }
 
     public function store(CreationRequest $request)
