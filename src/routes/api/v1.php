@@ -35,6 +35,7 @@ Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
         Route::delete('/comment/permanent/{post}/{id}', 'CommentController@forceDelete')->name('comment.forceDelete');
         Route::delete('/comment/{post}/{comment}', 'CommentController@delete')->name('comment.delete');
         Route::put('/comment/{post}/{comment}', 'CommentController@update')->name('comment.update');
+
         //post-likes
         Route::post('/like/{post}', 'LikePostController@storeLike')->name('like.post.save');
         Route::delete('/like/{post}', 'LikePostController@removeLike')->name('like.post.remove');

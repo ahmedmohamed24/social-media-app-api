@@ -45,3 +45,4 @@ class CommentRepository extends BaseRepository implements ICommentRepository
         return self::$model->withTrashed()->where('id', $id)->firstOrFail()->forceDelete();
     }
 }
+

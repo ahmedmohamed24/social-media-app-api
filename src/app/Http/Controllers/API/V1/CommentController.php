@@ -69,5 +69,6 @@ class CommentController extends Controller
         $comment = $comment->restore();
 
         return $this->response(200, 'restored', \null, ['comment' => $comment]);
+
     }
 }
