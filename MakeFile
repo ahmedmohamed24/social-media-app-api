@@ -1,0 +1,16 @@
+All:
+# create new MYSQL folder:
+	mkdir mysql
+# Build docker environment:
+	docker-compose build && docker-compose up -d
+# change cache and storage permissions:
+	sudo chmod +755 -R src/bootstrap/cache
+	sudo chmod +755 -R src/storage
+	cd src; php artisan config:clear
+# Migrate Database:
+	echo "docker-compose exec php php /var/www/html/artisan migrate:fresh"
+# Install passport:
+	echo "docker-compose exec php php /var/www/html/artisan passport:install"
+# Seed Admin factory to create 2 admins credentials:
+	echo "docker-compose exec php php /var/www/html/artisan db:seed --class=AdminSeeder"
+

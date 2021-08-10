@@ -17,7 +17,7 @@ class PostRepository extends BaseRepository implements IPostRepository
 
     public function paginate(?int $perPage = null, array $columns = ['*'], string $pageName = 'page', ?int $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return self::$model->withCount('likes')->with('owner')->with('comments')->paginate($perPage, $columns, $pageName, $page);
+        return self::$model->withCount('likes')->with('owner')->with('commentsLimit')->withCount('comments')->paginate($perPage, $columns, $pageName, $page);
     }
 
     public function find(int $id): ?Model

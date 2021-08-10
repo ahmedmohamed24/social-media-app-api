@@ -58,6 +58,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'force.json' => \App\Http\Middleware\ForceJsonMiddleware::class,
+        'passport.guard.api' => \App\Http\Middleware\PassportAPIGuardMiddleware::class,
+        'passport.guard.admin' => \App\Http\Middleware\PassportAdminGuardMiddleware::class,
     ];
 
     /**

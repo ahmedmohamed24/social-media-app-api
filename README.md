@@ -1,5 +1,54 @@
 # Social Media app
 
+## Features:
+* Admin
+   - create admin (seeding)
+   - login
+   - logout
+   - retrieve admin info
+* Client
+    - get all clients
+    - create
+    - update
+    - delete
+* User
+  - register to specific client
+  - login
+  - logout
+  - retrieve info
+* Post
+    - create
+    - update
+    - soft delete
+    - paginate on posts
+    - show post with related info (likes, comments, and replies)
+    - restore
+    - force delete
+    - paginate on specific user posts
+* Comment
+    - create
+    - update
+    - soft delete
+    - restore
+    - force delete
+* Reply
+    - create reply to a comment
+    - update
+    - soft delete
+    - force delete
+    - restore
+* Like
+    - like and dislike a post
+    - like and dislike a comment
+    - like and dislike a reply
+    - return likes and sum of them when viewing (post,likes,comments)
+* Users Relations
+    - add friend
+    - approve friend request
+    - reject a friend request
+    - get friend requests list (sent and received)
+    - list of friends
+    - remove a friend
 ## Technologies:
 <p align="center">
     <a href="#">
@@ -14,28 +63,29 @@
     <a href="#">
         <img src="https://img.shields.io/badge/-Postman-F88C00?style=for-the-badge&amp;labelColor=black&amp;logo=postman&amp;logoColor=F88C00" alt="postman" style="max-width:100%;">
     </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/-REDIS-f5f5f5?style=for-the-badge&amp;labelColor=red&amp;logo=redis&amp;logoColor=white" alt="PHP" style="max-width:100%;">
-    </a>
+
 </p>
 
 ## Getting started:
 1. Fork this Repository
 1. change the current directory to project path
-   ex: ```cd ecommerce ```
+   ex: ```media-app```
 1. make the database folder ```mkdir mysql```
 1. ``` docker-compose build && docker-compose up -d ```
 
     **alert:** </span> if there is a server running in your machine, you should stop it or change port 80 in docker-compose.yml to another port(8000)
 
 1. install dependencies with composer ```cd src && composer install```, if you are in a production server and composer is not installed, you can install the dependencies from docker environment ``` docker-compose exec php /bin/sh``` then, ```composer install```
-1. run ``` docker-compose exec php php /var/www/html/artisan migrate --seed```
+1. run ``` docker-compose exec php php /var/www/html/artisan migrate ```
+1. run ``` docker-compose exec php php /var/www/html/artisan db:seed --class=AdminSeeder```
 1. run ``` docker-compose exec php php /var/www/html/artisan test``` to run all tests and make sure everything is OK
-1. run ``` docker-compose exec php php /var/www/html/artisan queue:work redis --tries=2``` to start the Queue
 1. import the database in POSTMAN and begin your work
 
 
 **Info:** if you want only the Laravel project,
 copy the  **/src** folder to wherever you want and  make database with name **store** , then generate key
-```php artisan key:generate```, then ``` php artisan serve ```
-
+1. ```php artisan key:generate```
+1. ``` php artisan migrate```
+1. ``` php artisan passport:install```
+1. ``` php artisan db:seed --class=AdminSeeder```
+1. ``` php artisan serve ```

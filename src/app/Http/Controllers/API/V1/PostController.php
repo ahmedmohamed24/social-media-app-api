@@ -20,6 +20,17 @@ class PostController extends Controller
         $this->model = $model;
     }
 
+    public function index()
+    {
+        $perPage = \request('perPage', null);
+        $columns = \request('perPage', ['*']);
+        $pageName = \request('perPage', 'page');
+        $page = \request('perPage', null);
+        $posts = $this->model->paginate($perPage, $columns, $pageName, $page);
+
+        return $this->response(200, 'Success', \null, ['posts', $posts]);
+    }
+
     public function show(int $post)
     {
         $post = $this->model->findOrFail($post);
