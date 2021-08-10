@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth\Admin;
 use App\Models\Admin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -27,7 +28,8 @@ class AuthTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $admin = Admin::factory()->create();
-        $credentials = ['email' => $admin->email, 'password' => 'password'];
+        Passport::actingAs($admin, '', 'admin');
+        $credentials = ['username' => $admin->email, 'password' => 'password', 'grant_type' => 'password', 'scope' => ''];
         $response = $this->postJson(\route('admin.login'), $credentials);
         $response->assertStatus(200);
     }

@@ -18,6 +18,6 @@ RUN apk update
 RUN apk add --no-cache \
     libpng-dev \
     libjpeg-turbo \
-    libjpeg-turbo-dev 
+    libjpeg-turbo-dev
 RUN docker-php-ext-configure gd --enable-gd --with-jpeg
 RUN docker-php-ext-install gd

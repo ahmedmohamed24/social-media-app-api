@@ -56,6 +56,9 @@ Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
         Route::post('/user/block/{user}', 'RelationController@blockUser')->name('user.block');
         Route::delete('/user/block/{user}', 'RelationController@unblockUser')->name('user.unblock');
         Route::get('/user/block-list/', 'RelationController@getBlocksList')->name('user.blockList');
+        //user profile
+        Route::get('/user/profile', 'UserProfileController@show')->name('user.profile');
+        Route::put('/user/profile', 'UserProfileController@update')->name('user.profile.update');
     });
     Route::group(['middleware' => 'guest:api'], function () {
         Route::post('/register', 'Auth\User\AuthController@register')->name('user.register');

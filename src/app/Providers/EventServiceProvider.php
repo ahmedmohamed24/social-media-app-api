@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\UserRegisteredEvent;
+use App\Listeners\AttachProfileListener;
+use App\Listeners\SendWelcomeMailListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -15,18 +18,20 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        // Registered::class => [
+        // SendEmailVerificationNotification::class,
+        // ],
+
+        UserRegisteredEvent::class => [
+            AttachProfileListener::class,
+            SendWelcomeMailListener::class,
         ],
     ];
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
     public function boot()
     {
-        //
     }
 }

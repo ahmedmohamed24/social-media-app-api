@@ -5,6 +5,7 @@ namespace App\Repository\Post;
 use App\Models\Post;
 use App\Repository\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class PostRepository extends BaseRepository implements IPostRepository
 {
@@ -25,27 +26,31 @@ class PostRepository extends BaseRepository implements IPostRepository
         return self::$model->with('likes')->with('owner')->with('comments')->find($id);
     }
 
-    public function findOrFail(int $id): Model
+    public function findOrFail(int $id)
     {
-        return self::$model->with('likes')->with('likes.owner')->with('owner')
-            ->with('comments')->withCount('likes')
-            ->withCount('comments')->with('comments.likes')->with(['comments' => function ($query) {
-                $query->withCount('likes');
-                $query->with('likes');
-                $query->with(['likes' => function ($q) {
-                    $q->with('owner');
-                }]);
-                $query->withCount('replies');
-                $query->with('replies');
-                $query->with(['replies' => function ($q) {
-                    $q->with('owner');
-                    $q->with('likes');
-                    $q->with(['likes' => function ($qu) {
-                        $qu->with('owner');
+        return Cache::remember(
+            'post'.$id,
+            '360000',
+            fn () => self::$model->with('likes')->with('likes.owner')->with('owner')
+                ->with('comments')->withCount('likes')
+                ->withCount('comments')->with('comments.likes')->with(['comments' => function ($query) {
+                    $query->withCount('likes');
+                    $query->with('likes');
+                    $query->with(['likes' => function ($q) {
+                        $q->with('owner');
                     }]);
-                    $q->withCount('likes');
-                }]);
-            }])->findOrFail($id);
+                    $query->withCount('replies');
+                    $query->with('replies');
+                    $query->with(['replies' => function ($q) {
+                        $q->with('owner');
+                        $q->with('likes');
+                        $q->with(['likes' => function ($qu) {
+                            $qu->with('owner');
+                        }]);
+                        $q->withCount('likes');
+                    }]);
+                }])->findOrFail($id)
+        );
     }
 
     public function getUser(): Model

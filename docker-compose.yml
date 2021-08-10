@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 networks:
   laravel:
@@ -33,7 +33,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: media 
+      MYSQL_DATABASE: media
       MYSQL_USER: root
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret
@@ -62,17 +62,15 @@ services:
       - 3000:3000
       - 3001:3001
     working_dir: /var/www/html
-    entrypoint: ['npm']
+    entrypoint: ["npm"]
     networks:
       - laravel
 
   redis_service:
     image: redis:alpine
-    container_name: redis_service
-    command: redis-server --appendonly yes 
+    volumes:
+      - ./redis:/data
     ports:
       - "6379:6379"
-    depends_on:
-      - php
     networks:
       - laravel
