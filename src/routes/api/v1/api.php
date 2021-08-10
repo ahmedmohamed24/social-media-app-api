@@ -69,3 +69,8 @@ Route::group(['middleware' => ['passport.guard.api']], function () {
     Route::get('/oauth/tokens', 'Laravel\Passport\Http\Controllers\AuthorizedAccessTokenController@forUser');
     Route::get('/token/refresh', 'Laravel\Passport\Http\Controllers\TransientTokenController@refresh');
 });
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('/', [App\Http\Controllers\Web\V1\UserNotificationController::class, 'index'])->name('home');
+    Route::post('/save-token', [App\Http\Controllers\Web\V1\UserNotificationController::class, 'saveToken'])->name('save-token');
+    Route::post('/send-notification', [App\Http\Controllers\Web\V1\UserNotificationController::class, 'sendPush'])->name('send.notification');
+});

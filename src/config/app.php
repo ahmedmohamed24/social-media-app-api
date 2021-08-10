@@ -24,6 +24,7 @@ return [
     | services the application utilizes. Set this in your ".env" file.
     |
     */
+    'firebase_server_key' => env('FIREBASE_SERVER_KEY', ''),
 
     'env' => env('APP_ENV', 'production'),
 

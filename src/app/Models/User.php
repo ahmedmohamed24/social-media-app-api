@@ -74,4 +74,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class, 'user_id', 'id');
     }
+
+    //devices related to a user, should receive a notification
+    public function notificationDevices()
+    {
+        return $this->hasMany(UserNotification::class, 'user_id', 'id');
+    }
 }
