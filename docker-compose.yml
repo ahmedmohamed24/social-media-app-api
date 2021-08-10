@@ -1,0 +1,78 @@
+version: '3'
+
+networks:
+  laravel:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.57.0/24
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html:delegated
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:5.7.29
+    container_name: mysql
+    restart: unless-stopped
+    volumes:
+      - ./mysql:/var/lib/mysql
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: media 
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: php
+    volumes:
+      - ./src:/var/www/html:delegated
+    ports:
+      - "9000:9000"
+    networks:
+      - laravel
+  npm:
+    image: iojs:onbuild
+    container_name: npm
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - 3000:3000
+      - 3001:3001
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+    networks:
+      - laravel
+
+  redis_service:
+    image: redis:alpine
+    container_name: redis_service
+    command: redis-server --appendonly yes 
+    ports:
+      - "6379:6379"
+    depends_on:
+      - php
+    networks:
+      - laravel
