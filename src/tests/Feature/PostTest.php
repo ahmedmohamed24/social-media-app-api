@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Post;
+namespace Tests\Feature;
 
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +11,7 @@ use Tests\TestCase;
  * @internal
  * @coversNothing
  */
-class CRUDTest extends TestCase
+class PostTest extends TestCase
 {
     use WithFaker;
     use RefreshDatabase;
@@ -69,7 +69,7 @@ class CRUDTest extends TestCase
         $post = Post::factory()->raw();
         $this->postJson(\route('post.store'), $post, ['Authorization' => 'Bearer '.$this->accessToken]);
         $response = $this->getJson(\route('user.posts'), ['Authorization' => 'Bearer '.$this->accessToken]);
-        $this->assertCount(2, $response['data']['posts']);
+        $this->assertCount(2, $response['data']['posts']['data']);
     }
 
     // @test
@@ -101,7 +101,7 @@ class CRUDTest extends TestCase
         $post = Post::factory()->raw();
         $this->postJson(\route('post.store'), $post, ['Authorization' => 'Bearer '.$this->accessToken]);
         $response = $this->getJson(\route('user.posts'), ['Authorization' => 'Bearer '.$this->accessToken]);
-        $this->assertCount(1, $response['data']['posts']);
+        $this->assertCount(1, $response['data']['posts']['data']);
         $this->deleteJson(\route('post.delete', Post::latest()->first()->id), ['Authorization' => 'Bearer '.$this->accessToken]);
         $this->assertNotNull(Post::withTrashed()->first()->deleted_at);
     }

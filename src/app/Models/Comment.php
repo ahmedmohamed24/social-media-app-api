@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends Model
+class Comment extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -15,11 +15,11 @@ class Post extends Model
      *
      * @var array
      */
-    protected $fillable = ['owner', 'content'];
+    protected $fillable = ['commented_by',  'content', 'post_id'];
 
     public function owner()
     {
-        return $this->belongsTo(User::class, 'owner', 'id');
+        return $this->belongsTo(User::class, 'commented_by', 'id');
     }
 
     public function likes()
@@ -27,8 +27,8 @@ class Post extends Model
         return $this->morphMany(Like::class, 'likable');
     }
 
-    public function comments()
+    public function post()
     {
-        return $this->hasMany(Comment::class, 'post_id', 'id');
+        return $this->belongsTo(Post::class, 'post_id', 'id');
     }
 }
