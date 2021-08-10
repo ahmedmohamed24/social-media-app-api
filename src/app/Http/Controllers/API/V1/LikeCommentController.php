@@ -23,7 +23,7 @@ class LikeCommentController extends Controller
 
     public function removeLike(Comment $comment)
     {
-        if (0 !== $comment->likes()->where('liked_by', auth()->id())->count()) {
+        if (0 === $comment->likes()->where('liked_by', auth()->id())->count()) {
             return $this->response(Response::HTTP_FORBIDDEN, 'not liked', ['This Comment  is not liked by You!'], \null);
         }
         $isDeleted = $comment->likes()->where('liked_by', auth()->id())->delete();

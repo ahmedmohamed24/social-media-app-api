@@ -13,7 +13,6 @@ $namespaceV1 = 'App\\Http\\Controllers\\API\\V1';
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::post('/client/register', [\App\Http\Controllers\API\V1\Auth\Client\RegisterController::class, 'storeClient'])->middleware('auth')->name('clients.store');
 
 Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
@@ -41,6 +40,15 @@ Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
         //comment-likes
         Route::post('/like/comment/{comment}', 'LikeCommentController@storeLike')->name('like.comment.save');
         Route::delete('/like/comment/{comment}', 'LikeCommentController@removeLike')->name('like.comment.remove');
+        //Reply
+        Route::get('/reply/restore/{comment}/{reply}', 'ReplyController@restore')->name('reply.restore');
+        Route::post('/reply/{comment}', 'ReplyController@store')->name('reply.store');
+        Route::delete('/reply/permanent/{comment}/{reply}', 'ReplyController@forceDelete')->name('reply.forceDelete');
+        Route::delete('/reply/{comment}/{reply}', 'ReplyController@delete')->name('reply.delete');
+        Route::put('/reply/{comment}/{reply}', 'ReplyController@update')->name('reply.update');
+        //Reply-likes
+        Route::post('/like/reply/{reply}', 'LikeReplyController@storeLike')->name('like.reply.save');
+        Route::delete('/like/reply/{reply}', 'LikeReplyController@removeLike')->name('like.reply.remove');
     });
     Route::group(['middleware' => 'guest:api'], function () {
         Route::post('/register', 'Auth\User\AuthController@register')->name('user.register');
