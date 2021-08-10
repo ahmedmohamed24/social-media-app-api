@@ -4,7 +4,6 @@ namespace App\Repository\Post;
 
 use App\Models\Post;
 use App\Repository\BaseRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class PostRepository extends BaseRepository implements IPostRepository
@@ -18,17 +17,17 @@ class PostRepository extends BaseRepository implements IPostRepository
 
     public function paginate(?int $perPage = null, array $columns = ['*'], string $pageName = 'page', ?int $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return self::$model->paginate($perPage, $columns, $pageName, $page);
+        return self::$model->withCount('likes')->with('owner')->with('comments')->paginate($perPage, $columns, $pageName, $page);
     }
 
     public function find(int $id): ?Model
     {
-        return self::$model->find($id);
+        return self::$model->with('likes')->with('owner')->with('comments')->find($id);
     }
 
     public function findOrFail(int $id): ?Model
     {
-        return self::$model->findOrFail($id);
+        return self::$model->with('likes')->with('owner')->with('comments')->findOrFail($id);
     }
 
     public function getUser(): Model
@@ -41,9 +40,9 @@ class PostRepository extends BaseRepository implements IPostRepository
         return $model->delete();
     }
 
-    public function getUserPosts(): Collection
+    public function getUserPosts(?int $perPage = null, array $columns = ['*'], string $pageName = 'page', ?int $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return auth()->user()->posts;
+        return auth()->user()->posts()->withCount('likes')->with('owner')->with('comments')->paginate($perPage, $columns, $pageName, $page);
     }
 
     public function findWithDeleted(int $id)

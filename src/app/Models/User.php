@@ -49,4 +49,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class, 'owner')->whereNull('deleted_at');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'liked_by', 'id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'commented_by', 'id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class, 'replied_by', 'id');
+    }
 }

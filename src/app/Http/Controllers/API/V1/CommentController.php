@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Post\CreationRequest;
-use App\Http\Requests\Post\UpdateRequest;
 use App\Http\Traits\ApiResponse;
-use App\Models\Post;
-use App\Repository\Post\IPostRepository;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class PostController extends Controller
+class CommentController extends Controller
 {
     use ApiResponse;
     protected $model;
@@ -20,11 +15,9 @@ class PostController extends Controller
         $this->model = $model;
     }
 
-    public function show(int $post)
+    public function show(Post $post)
     {
-        $post = $this->model->findOrFail($post);
-
-        return $this->response(200, 'success', \null, ['post' => $post]);
+        return $post;
     }
 
     public function store(CreationRequest $request)
