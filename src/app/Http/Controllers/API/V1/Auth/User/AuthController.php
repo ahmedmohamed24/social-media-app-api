@@ -3,61 +3,66 @@
 namespace App\Http\Controllers\API\V1\Auth\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\LoginRequest;
-use App\Http\Requests\User\RegisterRequest;
 use App\Http\Traits\ApiResponse;
 use App\Models\User;
+use App\Services\UserAuthService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
-use Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 class AuthController extends Controller
 {
     use ApiResponse;
+    private $userAuthService;
 
-    public function register(RegisterRequest $request)
+    public function __construct(UserAuthService $userAuthService)
     {
-        try {
-            //use transaction to prevent creating user without issuing a Token
-            DB::beginTransaction();
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-            ]);
-            //get client name
-            $client = DB::table('oauth_clients')->where('id', $request->client_id)->where('secret', $request->client_secret)->first();
-            if (!$client) {
-                throw new ValidationException($client);
-            }
-            $accessToken = $user->createToken($client->name)->accessToken;
-
-            DB::commit();
-
-            return $this->response(201, 'success', \null, ['user' => $user, 'access_token' => $accessToken]);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            if ($e instanceof ValidationException) {
-                return $this->response(406, 'Invalid client.', ['client' => 'Invalid client credentials'], \null);
-            }
-            Log::alert($e->getMessage());
-
-            return $this->response(500, 'internal error occurred!', \null, \null);
-        }
+        $this->userAuthService = $userAuthService;
     }
 
-    public function login(LoginRequest $request)
+    public function login(ServerRequestInterface $request)
     {
-        if (!Auth::attempt($request->validated())) {
-            return $this->response(406, 'The Given data was invalid', 'Invalid Credentials!', \null);
+        //parse body
+        $data = \json_decode($request->getBody(), true);
+        //validate data
+        $validator = $this->userAuthService->validateLoginRequest($data);
+        if ($validator->fails()) {
+            return $this->response(401, 'Invalid data', $validator->getMessageBag(), \null);
         }
-        //get the client name used in register process
-        $clientName = DB::table('oauth_access_tokens')->where('user_id', \auth()->id())->latest()->first()->name ?? 'authToken';
-        $accessToken = \auth()->user()->createToken($clientName)->accessToken;
+        //set grant_type and cope statically
+        $request->grant_type = 'password';
+        $request->scope = '';
 
-        return $this->response(302, 'success', null, ['access_token' => $accessToken]);
+        $response = $this->userAuthService->issueToken($request);
+        if (200 === $response->status()) {
+            //success (302 to indicate user to redirect)
+            return $this->response(302, 'success', \null, \json_decode($response->getContent(), \true));
+        }
+
+        return $this->response($response->status(), 'authentication Error!', [$response->getContent()], \null);
+    }
+
+    public function register(ServerRequestInterface $request)
+    {
+        $data = \json_decode($request->getBody(), \true);
+        $validator = $this->userAuthService->validateRegisterRequest($data);
+        if ($validator->fails()) {
+            return $this->response(401, 'Invalid data', $validator->getMessageBag(), \null);
+        }
+
+        $data = $validator->validated();
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['username'],
+            'password' => \bcrypt($data['password']),
+        ]);
+
+        $response = $this->userAuthService->issueToken($request);
+        if (200 === $response->status()) {
+            return $this->response(201, 'success', \null, \json_decode($response->getContent(), \true));
+        }
+
+        return $this->response($response->status(), 'authentication Error!', [$response->getContent()], \null);
     }
 
     public function getUser()

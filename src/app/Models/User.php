@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reply::class, 'replied_by', 'id');
     }
+
+    public function relations()
+    {
+        return $this->hasMany(UserRelation::class, 'relatedUserID', 'id');
+    }
 }

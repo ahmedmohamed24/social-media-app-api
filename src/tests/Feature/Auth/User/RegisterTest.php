@@ -29,7 +29,7 @@ class RegisterTest extends TestCase
         $user = $this->getUser();
         $user['client_id'] = '1238717';
         $response = $this->postJson(\route('user.register'), $user);
-        $response->assertJsonFragment(['client_id' => ['Invalid client']]);
+        $response->assertJsonFragment(['message' => 'Invalid data']);
     }
 
     // @test

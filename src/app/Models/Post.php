@@ -31,4 +31,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class, 'post_id', 'id');
     }
+
+    public function commentsLimit()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'id')->latest()->limit(10);
+    }
 }
