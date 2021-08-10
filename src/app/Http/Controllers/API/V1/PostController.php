@@ -9,6 +9,7 @@ use App\Http\Traits\ApiResponse;
 use App\Models\Post;
 use App\Repository\Post\IPostRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -22,11 +23,16 @@ class PostController extends Controller
 
     public function index()
     {
-        $perPage = \request('perPage', null);
-        $columns = \request('perPage', ['*']);
-        $pageName = \request('perPage', 'page');
-        $page = \request('perPage', null);
-        $posts = $this->model->paginate($perPage, $columns, $pageName, $page);
+        $validator = Validator::make(\request()->all(), [
+            'perPage' => ['nullable', 'integer', 'max:30'],
+            'pageName' => ['nullable', 'string'],
+            'page' => ['nullable', 'integer'],
+        ]);
+        if ($validator->fails()) {
+            return $this->response(401, 'invalid data given', $validator->getMessageBag(), \null);
+        }
+        $data = $validator->validated();
+        $posts = $this->model->paginate($data['perPage'] ?? \null, ['*'], $data['pageName'] ?? 'page', $data['page'] ?? \null);
 
         return $this->response(200, 'Success', \null, ['posts', $posts]);
     }

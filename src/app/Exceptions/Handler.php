@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -42,7 +41,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($e instanceof AccessDeniedHttpException) {
+        if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
             return response()->json(['data' => [], 'errors' => ['User Not authorized to perform this action'], 'meta' => ['message' => $e->getMessage()]], 403);
         }
         if ($e instanceof AuthenticationException) {

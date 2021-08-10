@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1\Auth\User;
 
+use App\Events\UserRegisteredEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
 use App\Models\User;
@@ -51,7 +52,7 @@ class AuthController extends Controller
         }
 
         $data = $validator->validated();
-        User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['username'],
             'password' => \bcrypt($data['password']),
@@ -59,6 +60,8 @@ class AuthController extends Controller
 
         $response = $this->userAuthService->issueToken($request);
         if (200 === $response->status()) {
+            \event(new UserRegisteredEvent($user->id, $user->email));
+
             return $this->response(201, 'success', \null, \json_decode($response->getContent(), \true));
         }
 

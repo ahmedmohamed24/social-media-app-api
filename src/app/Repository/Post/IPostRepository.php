@@ -10,7 +10,7 @@ interface IPostRepository
 
     public function find(int $id): ?Model;
 
-    public function findOrFail(int $id): Model;
+    public function findOrFail(int $id);
 
     public function getUser(): Model;
 

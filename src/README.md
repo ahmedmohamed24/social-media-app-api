@@ -1,3 +1,5 @@
+# Social Media app
+
 ## Features:
 * Admin
    - create admin (seeding)
@@ -10,10 +12,11 @@
     - update
     - delete
 * User
-  - register to specific client
+  - register to specific client (send a welcome email and create a **Profile**)
   - login
   - logout
   - retrieve info
+  - update profile info (bio,address, etc ..)
 * Post
     - create
     - update
@@ -23,6 +26,7 @@
     - restore
     - force delete
     - paginate on specific user posts
+    - cache post result with redis
 * Comment
     - create
     - update
@@ -47,4 +51,7 @@
     - get friend requests list (sent and received)
     - list of friends
     - remove a friend
+    - block a user
+    - list of blocked users
+    - unblock a user
 
