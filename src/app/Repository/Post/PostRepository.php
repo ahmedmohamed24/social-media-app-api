@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Repository\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class PostRepository extends BaseRepository implements IPostRepository
 {
@@ -81,5 +82,21 @@ class PostRepository extends BaseRepository implements IPostRepository
     public function forceDelete(int $id): ?bool
     {
         return self::$model->withTrashed()->where('id', $id)->firstOrFail()->forceDelete();
+    }
+
+    public function index()
+    {
+        $validator = Validator::make(\request()->all(), [
+            'perPage' => ['nullable', 'integer', 'max:30'],
+            'pageName' => ['nullable', 'string'],
+            'page' => ['nullable', 'integer'],
+        ]);
+        if ($validator->fails()) {
+            return [\false, $validator->getMessageBag()];
+        }
+        $data = $validator->validated();
+        $posts = $this->paginate($data['perPage'] ?? \null, ['*'], $data['pageName'] ?? 'page', $data['page'] ?? \null);
+
+        return [\true, $posts];
     }
 }

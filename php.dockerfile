@@ -9,7 +9,7 @@ RUN mkdir -p /var/www/html
 RUN chown laravel:laravel /var/www/html
 WORKDIR /var/www/html
 
-RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install pdo_mysql exif 
 
 #install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -18,6 +18,7 @@ RUN apk update
 RUN apk add --no-cache \
     libpng-dev \
     libjpeg-turbo \
-    libjpeg-turbo-dev
+    libjpeg-turbo-dev \
+    ffmpeg
 RUN docker-php-ext-configure gd --enable-gd --with-jpeg
 RUN docker-php-ext-install gd
