@@ -1,5 +1,25 @@
 # Social Media app
-
+## Technologies:
+<p align="center">
+    <a href="#">
+        <img src="https://img.shields.io/badge/-PHP-f5f5f5?style=for-the-badge&amp;labelColor=grey&amp;logo=PHP&amp;logoColor=white" alt="PHP" style="max-width:100%;">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/badge/-Docker-61dafb?style=for-the-badge&amp;labelColor=black&amp;logo=docker&amp;logoColor=61dafb" alt="docker" style="max-width:100%;">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/badge/-REDIS-f5f5f5?style=for-the-badge&amp;labelColor=red&amp;logo=redis&amp;logoColor=white" alt="PHP" style="max-width:100%;">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/badge/-Postman-F88C00?style=for-the-badge&amp;labelColor=black&amp;logo=postman&amp;logoColor=F88C00" alt="postman" style="max-width:100%;">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/badge/-MYSQL-f5f5f5?style=for-the-badge&amp;labelColor=09c&amp;logo=Mysql&amp;logoColor=white" alt="MYSQL" style="max-width:100%;">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/badge/-Firebase-white?style=for-the-badge&amp;labelColor=F88C00&amp;logo=FIREBASE&amp;logoColor=white" alt="Firebase" style="max-width:100%;">
+    </a>
+</p>
 ## Features:
 * Admin
    - create admin (seeding)
@@ -18,7 +38,7 @@
   - retrieve info
   - update profile info (bio,address, etc ..)
 * Post
-    - create
+    - create (upload files with a post)(send notification to user friends, that new post created)
     - update
     - soft delete
     - paginate on posts
@@ -54,22 +74,7 @@
     - block a user
     - list of blocked users
     - unblock a user
-## Technologies:
-<p align="center">
-    <a href="#">
-        <img src="https://img.shields.io/badge/-PHP-f5f5f5?style=for-the-badge&amp;labelColor=grey&amp;logo=PHP&amp;logoColor=white" alt="PHP" style="max-width:100%;">
-    </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/-MYSQL-075b9a?style=for-the-badge&amp;labelColor=black&amp;logo=Mysql&amp;logoColor=white" alt="MYSQL" style="max-width:100%;">
-    </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/-Docker-61dafb?style=for-the-badge&amp;labelColor=black&amp;logo=docker&amp;logoColor=61dafb" alt="docker" style="max-width:100%;">
-    </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/-Postman-F88C00?style=for-the-badge&amp;labelColor=black&amp;logo=postman&amp;logoColor=F88C00" alt="postman" style="max-width:100%;">
-    </a>
 
-</p>
 
 ## Getting started:
 1. Fork this Repository

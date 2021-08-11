@@ -1,5 +1,4 @@
 # Social Media app
-
 ## Features:
 * Admin
    - create admin (seeding)
@@ -18,7 +17,7 @@
   - retrieve info
   - update profile info (bio,address, etc ..)
 * Post
-    - create
+    - create (upload files with a post)(send notification to user friends, that new post created)
     - update
     - soft delete
     - paginate on posts
@@ -54,4 +53,5 @@
     - block a user
     - list of blocked users
     - unblock a user
+
 

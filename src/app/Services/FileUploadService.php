@@ -22,7 +22,6 @@ class FileUploadService
 
     public function savePostFiles($media, Post $post)
     {
-        dd($media);
         Media::query()->findMany($media)
             ->each(function (Media $mediaFile) use ($post) {
                 $mediaFile->move($post, 'posts');
