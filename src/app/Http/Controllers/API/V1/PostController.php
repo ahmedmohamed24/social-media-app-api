@@ -9,46 +9,47 @@ use App\Http\Traits\ApiResponse;
 use App\Jobs\PostCreatedJob;
 use App\Models\Post;
 use App\Repository\Post\IPostRepository;
+use App\Services\FileUploadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
     use ApiResponse;
-    protected $model;
+    private $model;
 
-    public function __construct(IPostRepository $model)
+    private $fileUploadService;
+
+    public function __construct(IPostRepository $model, FileUploadService $fileUploadService)
     {
         $this->model = $model;
+        $this->fileUploadService = $fileUploadService;
     }
 
     public function index()
     {
-        $validator = Validator::make(\request()->all(), [
-            'perPage' => ['nullable', 'integer', 'max:30'],
-            'pageName' => ['nullable', 'string'],
-            'page' => ['nullable', 'integer'],
-        ]);
-        if ($validator->fails()) {
-            return $this->response(401, 'invalid data given', $validator->getMessageBag(), \null);
+        [$isValid,$response] = $this->model->index();
+        if (!$isValid) {
+            return $this->response(401, 'invalid data given', $response, \null);
         }
-        $data = $validator->validated();
-        $posts = $this->model->paginate($data['perPage'] ?? \null, ['*'], $data['pageName'] ?? 'page', $data['page'] ?? \null);
 
-        return $this->response(200, 'Success', \null, ['posts', $posts]);
+        return $this->response(200, 'Success', \null, ['posts', $response]);
     }
 
     public function show(int $post)
     {
         $post = $this->model->findOrFail($post);
 
-        return $this->response(200, 'success', \null, ['post' => $post]);
+        return $this->response(200, 'success', \null, ['post' => $post, 'media' => 'media']);
     }
 
     public function store(CreationRequest $request)
     {
         $post = ['content' => $request->content, 'owner' => \auth()->id()];
         $post = Post::create($post);
+        //upload files
+        if ($request->input('media')) {
+            $this->fileUploadService->savePostFiles($request->input('media'), $post);
+        }
         \dispatch(new PostCreatedJob($post, \auth()->id()));
 
         return $this->response(201, 'created', null, ['post' => $post]);

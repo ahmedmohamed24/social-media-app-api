@@ -59,6 +59,8 @@ Route::group(['namespace' => '\App\Http\Controllers\API\V1\\'], function () {
         //user profile
         Route::get('/user/profile', 'UserProfileController@show')->name('user.profile');
         Route::put('/user/profile', 'UserProfileController@update')->name('user.profile.update');
+        //uploader
+        Route::post('/media', 'FileUploadController@store')->name('file.uploader');
     });
     Route::group(['middleware' => 'guest:api'], function () {
         Route::post('/register', 'Auth\User\AuthController@register')->name('user.register');

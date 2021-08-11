@@ -23,4 +23,6 @@ interface IPostRepository
     public function restore(int $id): ?Model;
 
     public function forceDelete(int $id): ?bool;
+
+    public function index();
 }
