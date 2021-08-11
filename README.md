@@ -1,5 +1,6 @@
 # Social Media app
 ## Technologies:
+
 <p align="center">
     <a href="#">
         <img src="https://img.shields.io/badge/-PHP-f5f5f5?style=for-the-badge&amp;labelColor=grey&amp;logo=PHP&amp;logoColor=white" alt="PHP" style="max-width:100%;">
@@ -20,7 +21,9 @@
         <img src="https://img.shields.io/badge/-Firebase-white?style=for-the-badge&amp;labelColor=F88C00&amp;logo=FIREBASE&amp;logoColor=white" alt="Firebase" style="max-width:100%;">
     </a>
 </p>
+
 ## Features:
+
 * Admin
    - create admin (seeding)
    - login
