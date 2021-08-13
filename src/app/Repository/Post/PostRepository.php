@@ -2,6 +2,7 @@
 
 namespace App\Repository\Post;
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Repository\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
@@ -29,29 +30,31 @@ class PostRepository extends BaseRepository implements IPostRepository
 
     public function findOrFail(int $id)
     {
-        return Cache::remember(
-            'post'.$id,
-            '360000',
-            fn () => self::$model->with('likes')->with('likes.owner')->with('owner')
-                ->with('comments')->withCount('likes')
-                ->withCount('comments')->with('comments.likes')->with(['comments' => function ($query) {
-                    $query->withCount('likes');
-                    $query->with('likes');
-                    $query->with(['likes' => function ($q) {
-                        $q->with('owner');
+        // return Cache::remember(
+        //     'post'.$id,
+        //     '360000',
+        //     fn () =>
+        return new PostResource(self::$model->with('likes')->with('likes.owner')->with('owner')
+            ->with('comments')->withCount('likes')
+            ->withCount('comments')->with('comments.likes')->with(['comments' => function ($query) {
+                $query->withCount('likes');
+                $query->with('likes');
+                $query->with(['likes' => function ($q) {
+                    $q->with('owner');
+                }]);
+                $query->withCount('replies');
+                $query->with('replies');
+                $query->with(['replies' => function ($q) {
+                    $q->with('owner');
+                    $q->with('likes');
+                    $q->with(['likes' => function ($qu) {
+                        $qu->with('owner');
                     }]);
-                    $query->withCount('replies');
-                    $query->with('replies');
-                    $query->with(['replies' => function ($q) {
-                        $q->with('owner');
-                        $q->with('likes');
-                        $q->with(['likes' => function ($qu) {
-                            $qu->with('owner');
-                        }]);
-                        $q->withCount('likes');
-                    }]);
-                }])->findOrFail($id)
-        );
+                    $q->withCount('likes');
+                }]);
+            }])->findOrFail($id));
+        // )
+        // );
     }
 
     public function getUser(): Model
@@ -71,7 +74,7 @@ class PostRepository extends BaseRepository implements IPostRepository
 
     public function findWithDeleted(int $id)
     {
-        return self::$model->withTrashed()->findOrFail($id);
+        return new PostResource(self::$model->withTrashed()->findOrFail($id));
     }
 
     public function restore(int $id): ?Model
