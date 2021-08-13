@@ -63,27 +63,6 @@
                         .catch(function(error) {
                             console.log('User Chat Token Error' + error);
                         });
-                    // $.ajaxSetup({
-                    //     headers: {
-                    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    //     }
-                    // });
-
-                    // $.ajax({
-                    //     url: '{{ route('save-token') }}',
-                    //     type: 'POST',
-                    //     data: {
-                    //         device_token: token,
-                    //         device_client: navigator.userAgent
-                    //     },
-                    //     dataType: 'JSON',
-                    //     success: function(response) {
-                    //         alert('Token saved successfully.');
-                    //     },
-                    //     error: function(err) {
-                    //         console.log('User Chat Token Error' + err);
-                    //     },
-                    // });
                 }).catch(function(err) {
                     console.log('User Chat Token Error' + err);
                 });

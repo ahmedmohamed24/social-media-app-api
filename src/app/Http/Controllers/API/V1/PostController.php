@@ -38,8 +38,9 @@ class PostController extends Controller
     public function show(int $post)
     {
         $post = $this->model->findOrFail($post);
+        $media = $post->getMedia();
 
-        return $this->response(200, 'success', \null, ['post' => $post, 'media' => 'media']);
+        return $this->response(200, 'success', \null, ['post' => $post, 'media' => $media]);
     }
 
     public function store(CreationRequest $request)

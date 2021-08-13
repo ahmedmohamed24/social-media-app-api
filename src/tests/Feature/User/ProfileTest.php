@@ -4,9 +4,11 @@ namespace Tests\Feature\User;
 
 use App\Events\UserRegisteredEvent;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -22,10 +24,8 @@ class ProfileTest extends TestCase
     public function testStatus302OnRequestingProfile()
     {
         $this->withoutExceptionHandling();
-        $user = $this->getUser();
-        $response = $this->postJson(\route('user.register'), $user);
-        $accessToken = $response['data']['access_token'];
-        $response = $this->getJson(\route('user.profile'), ['Authorization' => 'Bearer '.$accessToken]);
+        Passport::actingAs(User::factory()->create(), [], 'api');
+        $response = $this->getJson(\route('user.profile'));
         $response->assertStatus(200);
     }
 
@@ -45,7 +45,6 @@ class ProfileTest extends TestCase
         $this->withoutExceptionHandling();
         $user = $this->getUser();
         $this->assertDatabaseCount('profiles', 0);
-
         $this->postJson(\route('user.register'), $user);
         $this->assertDatabaseCount('profiles', 1);
     }
