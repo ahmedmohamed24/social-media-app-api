@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Comment\CreationRequest;
 use App\Http\Requests\Comment\UpdateRequest;
+use App\Http\Resources\CommentResource;
 use App\Http\Traits\ApiResponse;
 use App\Models\Comment;
 use App\Models\Post;
@@ -20,15 +21,11 @@ class CommentController extends Controller
         $this->model = $model;
     }
 
-    public function paginate()
-    {
-    }
-
     public function store(Post $post, CreationRequest $request)
     {
         $comment = $post->comments()->create(['content' => $request->content, 'commented_by' => \auth()->id()]);
 
-        return $this->response(201, 'created', \null, ['comment' => $comment]);
+        return $this->response(201, 'created', \null, ['comment' => CommentResource::make($comment)]);
     }
 
     public function update(Post $post, Comment $comment, UpdateRequest $request)

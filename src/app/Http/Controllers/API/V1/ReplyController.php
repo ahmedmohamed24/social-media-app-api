@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reply\CreationRequest;
 use App\Http\Requests\Reply\UpdateRequest;
+use App\Http\Resources\ReplyResource;
 use App\Http\Traits\ApiResponse;
 use App\Models\Comment;
 use App\Models\Reply;
@@ -28,7 +29,7 @@ class ReplyController extends Controller
     {
         $reply = $comment->replies()->create(['content' => $request->content, 'replied_by' => \auth()->id()]);
 
-        return $this->response(201, 'created', \null, ['reply' => $reply]);
+        return $this->response(201, 'created', \null, ['reply' => ReplyResource::make($reply)]);
     }
 
     public function update(Comment $comment, Reply $reply, UpdateRequest $request)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1\Auth\User;
 
 use App\Events\UserRegisteredEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Http\Traits\ApiResponse;
 use App\Models\User;
 use App\Services\UserAuthService;
@@ -74,7 +75,7 @@ class AuthController extends Controller
 
     public function getUser()
     {
-        return $this->response(200, 'success', \null, \auth()->user());
+        return $this->response(200, 'success', \null, new UserResource(User::findOrFail(\auth()->id())));
     }
 
     public function logout(Request $request)
