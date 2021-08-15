@@ -23,9 +23,9 @@ class ProfileResource extends JsonResource
             'postal-code' => $this->{'postal-code'},
             'address-line-1' => $this->{'address-line-1'},
             'address-line-2' => $this->{'address-line-2'},
-            'photo_path' => $this->{'photo_path'},
-            'cover_path' => $this->cover_path,
             'education' => $this->education,
+            'thumbnail' => $this->getMedia('profiles')->last()->getUrl('thumb'),
+            'profile_picture' => MediaResource::collection($this->getMedia('profiles')),
         ];
     }
 }

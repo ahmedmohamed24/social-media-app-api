@@ -29,4 +29,11 @@ class FileUploadService
             })
             ;
     }
+
+    public function saveProfilePicture($media, $profile)
+    {
+        $mediaFile = Media::where('uuid', $media)->firstOrFail();
+        $mediaFile->move($profile, 'profiles');
+        $mediaFile->model()->delete();
+    }
 }
