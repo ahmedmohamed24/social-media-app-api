@@ -39,7 +39,10 @@
   - login
   - logout
   - retrieve info
-  - update profile info (bio,address, etc ..)
+* Profile
+  - update info
+  - upload image
+  - thumbnail automatically generated
 * Post
     - create (upload files with a post)(send notification to user friends, that new post created)
     - update
@@ -50,6 +53,8 @@
     - force delete
     - paginate on specific user posts
     - cache post result with redis
+* Firebase notifications
+    - send a firebase notification when new post created by someone of their friends
 * Comment
     - create
     - update
@@ -78,7 +83,6 @@
     - list of blocked users
     - unblock a user
 
-
 ## Getting started:
 1. Fork this Repository
 1. change the current directory to project path
@@ -102,3 +106,4 @@ copy the  **/src** folder to wherever you want and  make database with name **st
 1. ``` php artisan passport:install```
 1. ``` php artisan db:seed --class=AdminSeeder```
 1. ``` php artisan serve ```
+1. ``` php artisan queue:work```
