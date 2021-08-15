@@ -32,9 +32,8 @@ class ProfileUpdateRequest extends FormRequest
             'postal-code' => ['nullable', 'string', 'max:20'],
             'address-line-1' => ['nullable', 'string'],
             'address-line-2' => ['nullable', 'string'],
-            'photo_path' => ['nullable', 'string', 'max:255'],
-            'cover_path' => ['nullable', 'string', 'max:255'],
             'education' => ['nullable', 'string'],
+            'media' => ['nullable', 'exists:media,uuid', 'max:1024'],
         ];
     }
 }

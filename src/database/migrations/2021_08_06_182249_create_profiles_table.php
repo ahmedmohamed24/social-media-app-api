@@ -23,8 +23,6 @@ class CreateProfilesTable extends Migration
             $table->string('postal-code')->nullable();
             $table->text('address-line-1')->nullable();
             $table->text('address-line-2')->nullable();
-            $table->string('photo_path')->nullable();
-            $table->string('cover_path')->nullable();
             $table->text('education')->nullable();
             $table->timestamps();
         });
